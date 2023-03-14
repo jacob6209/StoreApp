@@ -7,27 +7,40 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-
+from rest_framework.viewsets import ModelViewSet
 from api import serializers
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
+# # === >  class based on ViewSet or  ModelViewSet  < =====
 
-class ApiProducts(ListCreateAPIView):
+class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class ApiProduct(RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class ApiCategories(ListCreateAPIView):
+class CategoriViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class= CategorySerializer
 
-class ApiCategory(RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+
+
+
+# class ApiProducts(ListCreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#
+# class ApiProduct(RetrieveUpdateDestroyAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#
+#
+# class ApiCategories(ListCreateAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class= CategorySerializer
+#
+# class ApiCategory(RetrieveUpdateDestroyAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
 
 # # === >   Class BaseView  < =====
 

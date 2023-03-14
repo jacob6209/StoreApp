@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # third App
     'rest_framework',
+    'django_filters',
 
     # Local App
     "api",
