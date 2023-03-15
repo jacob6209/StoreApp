@@ -1,8 +1,8 @@
 from urllib import response
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
-from .serializers import ProductSerializer, CategorySerializer
-from storeapp.models import Category, Product
+from .serializers import ProductSerializer, CategorySerializer,ReviewSerializer
+from storeapp.models import Category, Product,Review
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -12,8 +12,9 @@ from api import serializers
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter
 from rest_framework.filters import SearchFilter,OrderingFilter
-
 from rest_framework.pagination import PageNumberPagination
+
+
 
 # Create your views here.
 # # === >  class based on ViewSet or  ModelViewSet  < =====
@@ -29,11 +30,20 @@ class ProductViewSet(ModelViewSet):
     # filterset_fields=["category_id","price"]
 
 
-
 class CategoriViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class= CategorySerializer
 
+
+class ReviewViewSet(ModelViewSet):
+    # queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+      return Review.objects.filter(product_id=self.kwargs["product_pk"])
+
+    def get_serializer_context(self):
+        return {"product_id":self.kwargs["product_pk"]}
 
 
 
