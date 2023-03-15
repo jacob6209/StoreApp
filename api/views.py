@@ -10,6 +10,10 @@ from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIVi
 from rest_framework.viewsets import ModelViewSet
 from api import serializers
 from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ProductFilter
+from rest_framework.filters import SearchFilter,OrderingFilter
+
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 # # === >  class based on ViewSet or  ModelViewSet  < =====
@@ -17,6 +21,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+    filterset_class=ProductFilter
+    search_fields=['name','description']
+    ordering_fields=['price']
+    pagination_class = PageNumberPagination
+    # filterset_fields=["category_id","price"]
+
+
 
 class CategoriViewSet(ModelViewSet):
     queryset = Category.objects.all()
