@@ -38,7 +38,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='img', blank=True, null=True, default='')
     price = models.FloatField(default=100.00)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, related_name='products')
-    slug = models.SlugField(default=None)
+    slug = models.SlugField(default=None,blank=True,null=True)
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     inventory = models.IntegerField(default=5)
     top_deal = models.BooleanField(default=False)
@@ -57,9 +57,17 @@ class Cart(models.Model):
 
 
 class Cartitems(models.Model):
-    # cart = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True,related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, related_name='cartitems')
     quantity = models.IntegerField(default=0)
+
+class ProductImage(models.Model):
+    product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="images")
+    image=models.ImageField(upload_to='img',default="",null=True,blank="")
+
+
+
+
 
 # class SavedItem(models.Model):
 #     owner = models.ForeignKey(Customer, on_delete=models.CASCADE, null = True, blank=True)

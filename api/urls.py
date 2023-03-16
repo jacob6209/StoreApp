@@ -7,11 +7,12 @@ from rest_framework_nested import routers
 router=routers.DefaultRouter()
 router.register("products",views.ProductViewSet)
 router.register("categories",views.CategoriViewSet)
+router.register("carts",views.CartViewSet)
 
 product_router=routers.NestedDefaultRouter(router,"products",lookup="product")
 product_router.register("reviews",views.ReviewViewSet,basename="product-reviews")
 
-# two whay to defin Router for ViewSets(ModelViewSets)
+# two-way to define Router for ViewSets(ModelViewSets)
 # urlpatterns = router.urls
 urlpatterns = [
     path("", include(router.urls)),
