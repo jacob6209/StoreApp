@@ -23,9 +23,9 @@ class CartItemAdmin(admin.ModelAdmin):
 
     def get_cart_id(self, obj):
         return obj.cart.id
+
     get_cart_id.short_description = 'Cart Id'
     get_cart_id.admin_order_field = 'cart__id'
 
+
 admin.site.register(Cartitems, CartItemAdmin)
-
-

@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser, UserManager
 
 
 # from  django.conf import settings
@@ -64,6 +64,15 @@ class Cartitems(models.Model):
 class ProductImage(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="images")
     image=models.ImageField(upload_to='img',default="",null=True,blank="")
+
+# class CustomUser(AbstractUser):
+#     username = None
+#     email = models.EmailField(unique=True)
+#
+#     USERNAME_FIELD = "email"
+#     REQUIRED_FIELDS = []
+#     objects = UserManager()
+
 
 
 

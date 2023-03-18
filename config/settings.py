@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # third App
     'rest_framework',
     'django_filters',
+    'djoser',
 
 
     # Local App
@@ -139,6 +140,23 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL="accounts.CustomUser"
+# AUTH_USER_MODEL="storeapp.CustomUser"
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
+    ),
+}
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+DJOSER = {
+    'SERIALIZERS': {
+        "user_create": "accounts.serializers.MyUserCreateSerializer"
+    }
+}
 
 # REST_FRAMEWORK = {
 #     'PAGE_SIZE': 2
