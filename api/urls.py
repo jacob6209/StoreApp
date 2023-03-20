@@ -8,6 +8,7 @@ router=routers.DefaultRouter()
 router.register("products",views.ProductViewSet)
 router.register("categories",views.CategoriViewSet)
 router.register("carts",views.CartViewSet)
+router.register("userprofile",views.ProfileViewSet)
 
 product_router=routers.NestedDefaultRouter(router,"products",lookup="product")
 product_router.register("reviews",views.ReviewViewSet,basename="product-reviews")
@@ -20,7 +21,8 @@ cart_router.register("items",views.CartItemViewSet,basename="cart-items")
 urlpatterns = [
     path("", include(router.urls)),
     path("",include(product_router.urls)),
-    path("",include(cart_router.urls))
+    path("",include(cart_router.urls)),
+    path("logout", views.LogoutAPIView.as_view(),name="logout")
 ]
 
 

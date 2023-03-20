@@ -1,9 +1,11 @@
 from urllib import response
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .serializers import ProductSerializer, CategorySerializer,ReviewSerializer,CartSerializer,\
-    CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer
-from storeapp.models import Category, Product,Review,Cart,Cartitems
+    CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer,ProfileSerializer
+from storeapp.models import Category, Product,Review,Cart,Cartitems,Profile
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -15,6 +17,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import generics
+from rest_framework import permissions
 
 
 
@@ -72,9 +76,30 @@ class CartItemViewSet(ModelViewSet):
 
     # serializer_class =CartItemSerializer
 
+class ProfileViewSet(ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class= ProfileSerializer
 
 
+class LogoutAPIView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
 
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message':"Success"},status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({'message':e},status=status.HTTP_400_BAD_REQUEST)
+    # serializer_class = LogoutSerializer
+    # permission_classes = permissions.IsAuthenticated,
+    #
+    # def post(self,request):
+    #     serializer=self.serializer_class(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 # class ApiProducts(ListCreateAPIView):
 #     queryset = Product.objects.all()

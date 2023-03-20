@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
-from django.contrib.auth.models import User, AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 # from  django.conf import settings
@@ -65,14 +67,13 @@ class ProductImage(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="images")
     image=models.ImageField(upload_to='img',default="",null=True,blank="")
 
-# class CustomUser(AbstractUser):
-#     username = None
-#     email = models.EmailField(unique=True)
-#
-#     USERNAME_FIELD = "email"
-#     REQUIRED_FIELDS = []
-#     objects = UserManager()
+class Profile(models.Model):
+    user=models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    full_name=models.CharField(max_length=30)
+    address=models.TextField()
 
+    def __str__(self):
+        return str(self.user)
 
 
 

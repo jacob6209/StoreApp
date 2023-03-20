@@ -1,6 +1,9 @@
 from itertools import product
 from rest_framework import serializers
-from storeapp.models import Category, Product, Review, Cart, Cartitems, ProductImage
+from rest_framework_simplejwt.tokens import RefreshToken,TokenError
+
+from storeapp.models import Category, Product, Review, Cart, Cartitems, ProductImage,Profile
+from django.contrib.auth import get_user_model
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -118,3 +121,27 @@ class CartSerializer(serializers.ModelSerializer):
         items = cart.items.all()
         total = sum([item.quantity * item.product.price for item in items])
         return total
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Profile
+        fields=["full_name","address"]
+
+# class LogoutSerializer(serializers.ModelSerializer):
+#     refresh=serializers.CharField()
+#
+#     def validate(self,attrs):
+#        self.token=attrs['refresh']
+#        return attrs
+#
+#     def save(self, **kwargs):
+#
+#      try:
+#         RefreshToken(self.token).blacklist()
+#      except TokenError:
+#           self.fail('bad token')
+
+
+
+
+
