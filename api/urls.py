@@ -3,7 +3,6 @@ from . import views
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-
 router=routers.DefaultRouter()
 router.register("products",views.ProductViewSet)
 router.register("categories",views.CategoriViewSet)
@@ -22,7 +21,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("",include(product_router.urls)),
     path("",include(cart_router.urls)),
-    path("logout", views.LogoutAPIView.as_view(),name="logout")
+
 ]
 
 

@@ -1,8 +1,12 @@
 from urllib import response
+
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
+from django.utils.timezone import localdate
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from config import settings
 from .serializers import ProductSerializer, CategorySerializer,ReviewSerializer,CartSerializer,\
     CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer,ProfileSerializer
 from storeapp.models import Category, Product,Review,Cart,Cartitems,Profile
@@ -19,6 +23,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
 from rest_framework import permissions
+from config.permission import ProductViewSetPermission
 
 
 
@@ -27,6 +32,7 @@ from rest_framework import permissions
 # # === >  class based on ViewSet or  ModelViewSet  < =====
 
 class ProductViewSet(ModelViewSet):
+    permission_classes = [ProductViewSetPermission,]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
@@ -35,6 +41,14 @@ class ProductViewSet(ModelViewSet):
     ordering_fields=['price']
     pagination_class = PageNumberPagination
     # filterset_fields=["category_id","price"]
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+        except Http404:
+            return Response({"Message": "Failed"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"Message":"Success"},status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoriViewSet(ModelViewSet):
@@ -80,18 +94,28 @@ class ProfileViewSet(ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class= ProfileSerializer
 
+#
+# class LogoutAPIView(generics.GenericAPIView):
+#     permission_classes = (permissions.IsAuthenticated,)
+#
+#     def post(self, request):
+#         try:
+#             refresh_token = request.data["refresh_token"]
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()
+#             return Response({'LogOut':"Success"},status=status.HTTP_205_RESET_CONTENT)
+#         except Exception as e:
+#             return Response({'LogOut':"failed"},status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutAPIView(generics.GenericAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # from djoser.views import TokenDestroyView
+    # from djoser import utils
+    #
+    # class UserLogoutView(TokenDestroyView):
+    #
+    #     def post(self, request):
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            return Response({'message':"Success"},status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response({'message':e},status=status.HTTP_400_BAD_REQUEST)
+
     # serializer_class = LogoutSerializer
     # permission_classes = permissions.IsAuthenticated,
     #
