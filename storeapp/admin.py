@@ -16,6 +16,7 @@ admin.site.register(Category)
 admin.site.register(Product)
 admin.site.register(Cart)
 admin.site.register(Profile)
+admin.site.register(Review)
 
 
 class CartItemAdmin(admin.ModelAdmin):

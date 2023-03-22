@@ -24,6 +24,8 @@ class Category(models.Model):
 
 
 class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review')
+
     product = models.ForeignKey("Product", on_delete=models.CASCADE, related_name="reviews")
     date_created = models.DateTimeField(auto_now_add=True)
     description = models.TextField(default="description")
@@ -34,6 +36,8 @@ class Review(models.Model):
 
 
 class Product(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='product')
+
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     discount = models.BooleanField(default=False)

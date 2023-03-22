@@ -23,7 +23,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
 from rest_framework import permissions
-from config.permission import ProductViewSetPermission
+from config.permission import ProductViewSetPermission,ReviewViewSetPermission
 
 
 
@@ -58,6 +58,7 @@ class CategoriViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     # queryset = Review.objects.all()
+    permission_classes = [ReviewViewSetPermission,]
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
@@ -65,6 +66,14 @@ class ReviewViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"product_id":self.kwargs["product_pk"]}
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+        except Http404:
+            return Response({"Message": "Failed"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"Message":"Success"},status=status.HTTP_204_NO_CONTENT)
 
 class CartViewSet(CreateModelMixin,RetrieveModelMixin,DestroyModelMixin,GenericViewSet):
     queryset = Cart.objects.all()

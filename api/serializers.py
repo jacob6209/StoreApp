@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 
 from storeapp.models import Category, Product, Review, Cart, Cartitems, ProductImage,Profile
 from django.contrib.auth import get_user_model
-
+User=get_user_model()
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +19,9 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    # user = serializers.StringRelatedField()
     images = ProductImageSerializer(many=True, read_only=True)
+    category=serializers.StringRelatedField()
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
         write_only=True
@@ -27,7 +29,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["id", "name", "description", "inventory", "price", "images", "uploaded_images"]
+        fields = ["id", "name", "description","category", "inventory", "price", "images", "uploaded_images","user"]
 
     # serializer Relationships fields                =>   #9Y
     #     category=serializers.StringRelatedField()
@@ -43,9 +45,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    # user=serializers.StringRelatedField()
+
     class Meta:
         model = Review
-        fields = ["id", "date_created", "name", "description"]
+        fields = ["id", "date_created", "name", "description","user"]
 
     def create(self, validated_data):
         product_id = self.context["product_id"]
@@ -126,6 +130,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Profile
         fields=["full_name","address"]
+        # fields='__all__'
 
 # class LogoutSerializer(serializers.ModelSerializer):
 #     refresh=serializers.CharField()
