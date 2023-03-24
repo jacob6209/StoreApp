@@ -2,6 +2,8 @@ from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+# from django.contrib.auth.models import User
 User = get_user_model()
 
 
@@ -67,19 +69,46 @@ class Cartitems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, related_name='cartitems')
     quantity = models.PositiveIntegerField(default=0)
 
+
 class ProductImage(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="images")
     image=models.ImageField(upload_to='img',default="",null=True,blank="")
 
+
 class Profile(models.Model):
-    user=models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    user=models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True,default="")
     full_name=models.CharField(max_length=30)
     address=models.TextField()
 
-    def __str__(self):
-        return str(self.user)
+    # def __str__(self):
+    #     return str(self.user)
 
+# class TestOrder(models.Model):
+#     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    # is_paid=models.BooleanField(_("is paid"),default=False)
+    # firs_name=models.CharField(verbose_name=_("first name"),max_length=100)
+    # last_name=models.CharField(_("last name"),max_length=100)
+    # phone_number= models.CharField(_("phone number"),max_length=15)
+    # address = models.CharField(_("address"),max_length=700,default="")
+    # zarinpal_authority=models.CharField(max_length=255,blank=True)
+    # orders_notes=models.CharField(_("Order Note"),max_length=700,blank=True)
+    # datatime_create = models.DateTimeField(_("create date"),auto_now_add=True)
+    # datatime_modified = models.DateTimeField(auto_now=True)
+    #
+    # def __str__(self):
+    #     return f'Order{self.id}'
+    #
+    # def get_total_price(self):
+    #     # result=0
+    #     # for item in self.items.all():
+    #     #     result+=(item.price*item.quantity)
+    #     # return result
+    #     return sum(item.quantity*item.price for item in self.items.all())
 
+# class TestOrderItem(models.Model):
+#     order = models.ForeignKey(TestOrder,verbose_name=_("order"), on_delete=models.CASCADE)
+#     product=models.ForeignKey(Product,verbose_name=_("Product"), on_delete=models.CASCADE)
 
 
 

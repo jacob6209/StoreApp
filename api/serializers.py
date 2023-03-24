@@ -4,6 +4,8 @@ from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 
 from storeapp.models import Category, Product, Review, Cart, Cartitems, ProductImage,Profile
 from django.contrib.auth import get_user_model
+# from models import MyOrder,MyOrderItem
+from rest_framework import serializers
 User=get_user_model()
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -127,10 +129,19 @@ class CartSerializer(serializers.ModelSerializer):
         return total
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model=Profile
-        fields=["full_name","address"]
+        fields=["user","full_name","address"]
         # fields='__all__'
+
+
+
+
+
+
+
+
 
 # class LogoutSerializer(serializers.ModelSerializer):
 #     refresh=serializers.CharField()

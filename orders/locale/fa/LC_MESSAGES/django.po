@@ -1,0 +1,99 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-06 16:37+0400\n"
+"PO-Revision-Date: 2023-02-04 09:05+0330\n"
+"Last-Translator:   <>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.9.8\n"
+
+#: .\forms.py:14
+msgid "if you have any notes please enter here otherwise leave it empty."
+msgstr "اگر پیامی دارد اینجا وارد کنید در غیر اینصورت این فیلد خالی باشد."
+
+#: .\models.py:9
+msgid "User"
+msgstr "کاربر"
+
+#: .\models.py:10
+msgid "is paid"
+msgstr "پرداخت شده"
+
+#: .\models.py:12
+msgid "first name"
+msgstr "نام"
+
+#: .\models.py:13
+msgid "last name"
+msgstr "نام خانوادگی"
+
+#: .\models.py:14
+msgid "phone number"
+msgstr "شماره تلفن"
+
+#: .\models.py:15
+msgid "address"
+msgstr "آدرس"
+
+#: .\models.py:17
+msgid "Order Note"
+msgstr "یاداشت سفارش"
+
+#: .\models.py:18
+msgid "create date"
+msgstr "تاریخ ایجاد"
+
+#: .\models.py:26
+msgid "order"
+msgstr "سفارش"
+
+#: .\models.py:27
+msgid "Product"
+msgstr "محصول"
+
+#: .\models.py:28
+msgid "quantity"
+msgstr "تعداد"
+
+#: .\models.py:29
+msgid "Price"
+msgstr "قیمت"
+
+#: .\templates\orders\order_create.html:14
+msgid "Order"
+msgstr "ثبت سفارش"
+
+#: .\templates\orders\order_create.html:51
+#: .\templates\orders\order_create.html:60
+#: .\templates\orders\order_create.html:71
+#: .\templates\orders\order_create.html:82
+msgid "Required Field"
+msgstr "الزامی می باشد."
+
+#: .\templates\orders\order_create.html:96
+msgid "Submit"
+msgstr "ارسال"
+
+#: .\templates\orders\order_create.html:120
+#: .\templates\orders\order_create.html:129
+msgid "$"
+msgstr "تومان"
+
+#: .\views.py:14
+msgid "You Can Not Proceed to Checkout Page Because Your Cart is Empty."
+msgstr "به دلیل خالی بودن سبد خرید شما نمی توانید عملیات پرداخت انجام دهید "
+
+#: .\views.py:37
+msgid "Your Order Has Successfully placed."
+msgstr "سفارش شما با موفقیت انجام شد."

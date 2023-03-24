@@ -1,13 +1,17 @@
 from django.urls import path,include
+
+import accounts.views
 from . import views
+from orders.views import OrderViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
-
 router=routers.DefaultRouter()
 router.register("products",views.ProductViewSet)
 router.register("categories",views.CategoriViewSet)
 router.register("carts",views.CartViewSet)
 router.register("userprofile",views.ProfileViewSet)
+router.register("order",OrderViewSet)
+
 
 product_router=routers.NestedDefaultRouter(router,"products",lookup="product")
 product_router.register("reviews",views.ReviewViewSet,basename="product-reviews")

@@ -18,7 +18,6 @@ admin.site.register(Cart)
 admin.site.register(Profile)
 admin.site.register(Review)
 
-
 class CartItemAdmin(admin.ModelAdmin):
     model = Cartitems
     list_display = ["product", "quantity", "get_cart_id"]

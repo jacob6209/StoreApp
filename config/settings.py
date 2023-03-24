@@ -46,12 +46,15 @@ INSTALLED_APPS = [
     'django_filters',
     'djoser',
     'django_extensions',
+    'jalali_date',
 
 
     # Local App
     "api",
     "storeapp",
     "accounts",
+    "orders",
+
 ]
 
 MIDDLEWARE = [
