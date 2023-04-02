@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import Order,OrderItem
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
 
 class OrderSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
@@ -11,12 +16,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_items(self, obj):
         result = obj.items.all()
-        return OrderItemSerializer(instance=result,many=True).data
-
-
-class OrderItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderItem
-        fields = '__all__'
-
-
+        return OrderItemSerializer(instance=result, many=True).data

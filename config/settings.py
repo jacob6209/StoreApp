@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_extensions',
     'jalali_date',
+    'django_dbml',
 
 
     # Local App

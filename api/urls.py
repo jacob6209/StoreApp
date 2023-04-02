@@ -2,15 +2,22 @@ from django.urls import path,include
 
 import accounts.views
 from . import views
-from orders.views import OrderViewSet
+from orders.views import OrderCreateView,CartToOrderView
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
+
+from django.urls import path, register_converter
+from django.urls.converters import UUIDConverter
+register_converter(UUIDConverter, 'UUID')
+
 router=routers.DefaultRouter()
 router.register("products",views.ProductViewSet)
 router.register("categories",views.CategoriViewSet)
 router.register("carts",views.CartViewSet)
+
 router.register("userprofile",views.ProfileViewSet)
-router.register("order",OrderViewSet)
+
+# router.register("orders",OrderViewSet,basename="order")
 
 
 product_router=routers.NestedDefaultRouter(router,"products",lookup="product")
@@ -19,12 +26,23 @@ product_router.register("reviews",views.ReviewViewSet,basename="product-reviews"
 cart_router=routers.NestedDefaultRouter(router,"carts",lookup="cart")
 cart_router.register("items",views.CartItemViewSet,basename="cart-items")
 
-# two-way to define Router for ViewSets(ModelViewSets)
-# urlpatterns = router.urls
+# child_order_router=routers.NestedDefaultRouter(router,"orders",lookup="cart")
+# child_order_router.register("items",views.CartItemViewSet,basename="cart-items")
+from .views import add_to_cart, remove_from_cart, clear_cart, view_cart
+
 urlpatterns = [
     path("", include(router.urls)),
     path("",include(product_router.urls)),
     path("",include(cart_router.urls)),
+
+    # path("",include(child_order_router.urls)),
+    # path('orders/<uuid:cart_id>/', OrderCreateView.as_view()),
+    path('orders/<uuid:cart_id>/', CartToOrderView.as_view()),
+
+    path('cart/add/', add_to_cart),
+    path('cart/remove/', remove_from_cart),
+    path('cart/clear/', clear_cart),
+    path('cart/view/', view_cart),
 
 ]
 

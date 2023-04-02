@@ -4,9 +4,6 @@ from jalali_date.admin import ModelAdminJalaliMixin
 
 # class CommentsInLine(admin.TabularInline):
 
-
-
-
 class OrderItemInLine(admin.StackedInline):
    model = OrderItem
    fields = ['order','product','quantity','price',]

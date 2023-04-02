@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import localdate
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from rest_framework import viewsets
 from config import settings
 from .serializers import ProductSerializer, CategorySerializer,ReviewSerializer,CartSerializer,\
     CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer,ProfileSerializer
@@ -102,6 +102,151 @@ class CartItemViewSet(ModelViewSet):
 class ProfileViewSet(ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class= ProfileSerializer
+#     -----------------------------------------------------New Cart Using Session Method---------------------------
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from storeapp.models import Product
+from .cart import Cart
+
+@api_view(['POST'])
+def add_to_cart(request):
+    """
+    Add a product to the cart
+    """
+    product_id = request.POST.get('product_id')
+    quantity = request.data.get('quantity', 1)
+    replace_current_quantity=request.data.get('replace_current_quantity',False)
+
+    if not product_id:
+        return Response({'error': 'Product ID is required'}, status=400)
+
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=404)
+
+    cart = Cart(request)
+    cart.add(product, quantity=quantity,replace_current_quantity=replace_current_quantity)
+
+    return Response({'message': 'Product added to cart'}, status=200)
+
+@api_view(['POST'])
+def remove_from_cart(request):
+    """
+    Remove a product from the cart
+    """
+    product_id = request.data.get('product_id')
+
+    if not product_id:
+        return Response({'error': 'Product ID is required'}, status=400)
+
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=404)
+
+    cart = Cart(request)
+    cart.remove(product)
+
+    return Response({'message': 'Product removed from cart'}, status=200)
+
+@api_view(['POST'])
+def clear_cart(request):
+    """
+    Remove all products from the cart
+    """
+    cart = Cart(request)
+    cart.clear()
+
+    return Response({'message': 'Cart cleared'}, status=200)
+
+@api_view(['GET'])
+def view_cart(request):
+    """
+    View the contents of the cart
+    """
+    cart = Cart(request)
+
+    cart_items = []
+    for item in cart:
+        cart_items.append({
+            'product_id': item['product_obj'].id,
+            'product_name': item['product_obj'].name,
+            'quantity': item['quantity'],
+            'price': item['product_obj'].price,
+            'total_price': item['total_price']
+        })
+
+    return Response({'cart': cart_items, 'total_price': cart.get_total_price()}, status=200)
+
+
+#     -----------------------------------------------------New Cart Using Session Method---------------------------
+# from .serializers import NewCartSerializer
+#
+# class NewCartViewSet(viewsets.ModelViewSet):
+#     queryset = Cart.objects.all()
+#     serializer_class = NewCartSerializer
+
+
+
+
+    # def get_queryset(self):
+    #     return Cartitems.objects.filter(cart_id=self.kwargs['cart_pk'])
+
+    # def get_serializer_context(self):
+    #     return {"cart_id":self.kwargs["cart_pk"]}
+    #
+    # def create(self, request, *args, **kwargs):
+    #     user = request.user
+    #     product_id = request.data['product_id']
+    #     quantity = request.data.get('quantity', 1)
+    #
+    #     # Check if the user already has a cart
+    #     try:
+    #         cart = Cart.objects.get(user=user)
+    #         cart.product.add(product_id)
+    #         cart.quantity += quantity
+    #         cart.save()
+    #     except Cart.DoesNotExist:
+    #         cart = Cart.objects.create(user=user, product=product_id, quantity=quantity)
+    #
+    #     # Store the cart ID in the cookie session
+    #     request.session['cart_id'] = cart.id
+    #
+    #     serializer = self.get_serializer(cart)
+    #     return Response(serializer.data)
+    #
+    # def retrieve(self, request, *args, **kwargs):
+    #     # Get the cart ID from the cookie session
+    #     cart_id = request.session.get('cart_id')
+    #     if cart_id:
+    #         cart = Cart.objects.get(id=cart_id)
+    #         serializer = self.get_serializer(cart)
+    #         return Response(serializer.data)
+    #     else:
+    #         return Response({'error': 'Cart not found.'}, status=status.HTTP_404_NOT_FOUND)
+    #
+    # def update(self, request, *args, **kwargs):
+    #     cart_id = kwargs['pk']
+    #     product_id = request.data['product_id']
+    #     quantity = request.data.get('quantity', 1)
+    #
+    #     cart = Cart.objects.get(id=cart_id)
+    #     cart.product.add(product_id)
+    #     cart.quantity += quantity
+    #     cart.save()
+    #
+    #     serializer = self.get_serializer(cart)
+    #     return Response(serializer.data)
+    #
+    # def destroy(self, request, *args, **kwargs):
+    #     cart_id = kwargs['pk']
+    #
+    #     cart = Cart.objects.get(id=cart_id)
+    #     cart.delete()
+    #
+    #     return Response({'success': 'Cart deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
 
 #
 # class LogoutAPIView(generics.GenericAPIView):

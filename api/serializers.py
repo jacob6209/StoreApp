@@ -103,7 +103,6 @@ class AddCartItemSerializer(serializers.ModelSerializer):
             self.instance = cartitem
 
         except:
-
             # self.instance = Cartitems.objects.create(product_id=product_id, cart_id=cart_id, quantity=quantity)
             self.instance = Cartitems.objects.create( cart_id=cart_id,**self.validated_data)
         return self.instance
@@ -136,9 +135,24 @@ class ProfileSerializer(serializers.ModelSerializer):
         # fields='__all__'
 
 
+# ------------------------------------------------------------
+# serializers.py
 
+class NewCartSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    User = get_user_model()
+    items = CartItemSerializer(read_only=True, many=True)
+    # serializerMethodField there are two-way to define using method_name and using get world prefix
+    grand_total = serializers.SerializerMethodField(method_name="main_total")
 
+    class Meta:
+        model = Cart
+        fields = ["id","user","items", "grand_total"]
 
+    def main_total(self, cart: Cart):
+        items = cart.items.all()
+        total = sum([item.quantity * item.product.price for item in items])
+        return total
 
 
 
