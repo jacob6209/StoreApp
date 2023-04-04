@@ -1,53 +1,66 @@
-import requests
-from rest_framework.viewsets import ModelViewSet,GenericViewSet
-from .models import Order,OrderItem
-from .serializers import OrderSerializer,OrderItemSerializer
-from storeapp.models import Cartitems,Cart
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-      # One Scenario
+from .models import Order, OrderItem
+from .serializers import OrderSerializer, OrderItemSerializer
+from api.cart import Cart
 
 class CartToOrderView(APIView):
-    def post(self, request, cart_id):
-        # Get the current user's cart based on cart id
-        cart = get_object_or_404(Cart, pk=cart_id)
+    authentication_classes = JWTAuthentication,
+    permission_classes = [IsAuthenticated]
 
-        # Verify that the user is authenticated
-        if not request.user.is_authenticated:
+    def post(self, request):
+        cart = Cart(request)
+        if request.auth is None:
             return Response({"error": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Get the cart items
-        cart_items = cart.items.all()
+        if len(cart) == 0:
+            return Response({"Error": "No Cart Items Found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Verify that at least one cart item exists
-        if not cart_items.exists():
-            return Response({"error": "No cart items found for specified cart ID."}, status=status.HTTP_404_NOT_FOUND)
+            # Check if required fields are not empty
+        required_fields = ['first_name', 'last_name', 'phone_number', 'address']
+        for field in required_fields:
+            if not request.data.get(field):
+                return Response({f"error: {field} is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create a new order based on the cart's contents
-        order = Order.objects.create(cart=cart,
-                                     user=request.user,
-                                     firs_name=request.data.get('firs_name'),
+        # first_name = request.data.get('first_name')
+        # last_name = request.data.get('last_name')
+        #
+        # if not first_name:
+        #     return Response({"Error": "First name is required."}, status=status.HTTP_400_BAD_REQUEST)
+        #
+        # if not last_name:
+        #     return Response({"Error": "Last name is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = Order.objects.create(user=request.user,
+                                     firs_name=request.data.get('first_name'),
                                      last_name=request.data.get('last_name'),
                                      phone_number=request.data.get('phone_number'),
                                      address=request.data.get('address'),
                                      orders_notes=request.data.get('orders_notes'))
 
-        # Create an order item for each cart item
-        for item in cart_items:
+        for item in cart:
+            product = item['product_obj']
             OrderItem.objects.create(order=order,
-                                     product=item.product,
-                                     quantity=item.quantity,
-                                     price=item.product.price)
+                                     product=product,
+                                     quantity=item['quantity'],
+                                     price=product.price)
 
-        # # Clear the cart
-        # cart.items.all().delete()
+        cart.clear()
+
+        # ---------------  Save Some User info ------------
+        request.user.first_name=order.firs_name
+        request.user.last_name = order.last_name
+        request.user.save()
 
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
   # Secend Scenario
 # class CartToOrderView(APIView):
