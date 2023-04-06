@@ -8,6 +8,10 @@ services:
       - .:/code
     ports:
       - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - "DJANGO_SECRET_KEY=django-insecure-zx#eghi-_nw5!ies2ylp$$zdosp8^n7lbysbvvtw4u--u)p^3u8"
   db:
     image: postgres:15
     environment:
